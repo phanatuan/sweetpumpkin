@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ReactModal from "react-modal";
-import YouTube from "@u-wave/react-youtube";
+import ModalYoutubeTrailer from "../ModalYoutubeTrailer";
 import "./MovieItem.css";
 
 class MovieItem extends React.Component {
@@ -9,28 +8,31 @@ class MovieItem extends React.Component {
     super();
     this.state = {
       isOpen: false,
-      id: null, 
-      trailers: [],
+      trailers: []
     };
   }
 
-  showTrailer = (id) => () => {
-    this.setState({id, isOpen: true})
-    this.fetchMovieTrailerId(id)
-    console.log("show trailer");
+  showTrailer = id => () => {
+    this.setState({ isOpen: true });
+    this.fetchMovieTrailerId(id);
   };
 
-  fetchMovieTrailerId = async (id) => { 
-    const API_KEY = '20332a8bd8988839153d7b400ba8f9db'
-    const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}&language=en-US`  
-    const response = await fetch(url)
-    const data = await response.json()
-    const trailers = await data.results
-    // console.log(trailers[0].key);
-    this.setState({ 
+  fetchMovieTrailerId = async id => {
+    const API_KEY = "20332a8bd8988839153d7b400ba8f9db";
+    const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}&language=en-US`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const trailers = await data.results;
+    this.setState({
       trailers
-    })
-  }
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      isOpen: false
+    });
+  };
 
   render() {
     const baseUrl = "https://image.tmdb.org/t/p/w500/";
@@ -75,14 +77,11 @@ class MovieItem extends React.Component {
       return (
         <>
           {displayMovie(this.props.movie, this.showTrailer)}
-          <ReactModal isOpen={this.state.isOpen}>
-            <button onClick={() => this.setState({ isOpen: false })}>
-              Hide Modal {this.state.id} 
-             <p>{this.state.trailers[0] ? this.state.trailers[0].key : 'Nothing'}</p>
-            </button>
-            {this.state.trailers[0] ? <YouTube video={this.state.trailers[0].key} autoplay /> : 'No Trailer'}
-         
-          </ReactModal>
+          <ModalYoutubeTrailer
+            isOpen={this.state.isOpen}
+            closeModal={this.closeModal}
+            keys={this.state.trailers.map(trailer => trailer.key)}
+          />
         </>
       );
     } else {

@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import Header from "./Header";
 import MovieList from "./MovieList/MovieList";
 import Navigation from "./Navigation";
-import ShowModal from "./ShowModal";
-import ReactModal from "react-modal";
-import YouTube from "@u-wave/react-youtube";
-
 import { Switch, Route } from "react-router-dom";
 
 class App extends Component {
@@ -112,9 +108,9 @@ class App extends Component {
     );
   };
 
-  showTrailer = (id) => () => { 
-    console.log('Show Trailer ' + id);
-  }
+  showTrailer = id => () => {
+    console.log("Show Trailer " + id);
+  };
 
   render() {
     let {
@@ -138,8 +134,10 @@ class App extends Component {
     let displayMovies;
 
     displayMovies = movies
-      .filter(movie =>
-        movie.title.toLowerCase().includes(searchMovie.toLowerCase())
+      .filter(
+        movie =>
+          movie.title.toLowerCase().includes(searchMovie.toLowerCase()) ||
+          movie.overview.toLowerCase().includes(searchMovie.toLowerCase())
       )
       .filter(
         movie =>
@@ -160,14 +158,8 @@ class App extends Component {
       );
     };
 
-
-
     return (
       <div className='container'>
-        <button onClick={() => this.setState({ isOpen: true })}>
-          Show Modal
-        </button>
-        
         <Header />
         <div className='row'>
           <div className='col-4'>
