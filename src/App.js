@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import Header from "./Header";
 import MovieList from "./MovieList/MovieList";
 import Navigation from "./Navigation";
+import ShowModal from "./ShowModal";
+import ReactModal from "react-modal";
+import YouTube from "@u-wave/react-youtube";
+
+import { Switch, Route } from "react-router-dom";
 
 class App extends Component {
   constructor() {
@@ -18,7 +23,8 @@ class App extends Component {
         min: 1987,
         max: 2019
       },
-      currentPage: 1
+      currentPage: 1,
+      isOpen: false
     };
   }
 
@@ -40,12 +46,9 @@ class App extends Component {
   };
 
   handleFilterRating = filterRating => {
-    this.setState(
-      {
-        filterRating
-      },
-      () => console.log(this.state.filterRating.min)
-    );
+    this.setState({
+      filterRating
+    });
   };
 
   handleFilterYear = filterYear => {
@@ -109,6 +112,10 @@ class App extends Component {
     );
   };
 
+  showTrailer = (id) => () => { 
+    console.log('Show Trailer ' + id);
+  }
+
   render() {
     let {
       sortMethod,
@@ -145,8 +152,22 @@ class App extends Component {
           : b.vote_average - a.vote_average
       );
 
+    const MoviePage = ({ match }) => {
+      return (
+        <MoviePage
+          movie={displayMovies.filter(movie => movie.id === match.params.id)}
+        />
+      );
+    };
+
+
+
     return (
       <div className='container'>
+        <button onClick={() => this.setState({ isOpen: true })}>
+          Show Modal
+        </button>
+        
         <Header />
         <div className='row'>
           <div className='col-4'>
@@ -169,9 +190,13 @@ class App extends Component {
               onNext={onNext}
               onPageSelect={onPageSelect}
               currentPage={currentPage}
+              showTrailer={this.showTrailer}
             />
           </div>
         </div>
+        <Switch>
+          <Route path='/movie/:movieId' component={MoviePage} />
+        </Switch>
       </div>
     );
   }

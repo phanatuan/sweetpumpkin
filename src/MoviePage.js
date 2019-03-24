@@ -1,9 +1,9 @@
 import React from 'react'
 
-const MoviePage = () => {
+const MoviePage = ({movie}) => {
   return (
     <div>
-      This is a movie page
+      This is a movie page with {movie.id}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import "./MovieList.css";
 class MovieList extends Component {
   render() {
     let renderMovieItem = this.props.movies.map(movie => {
-      return <MovieItem movie={movie} key={movie.id} />;
+      return <MovieItem movie={movie} key={movie.id} showTrailer={this.props.showTrailer} />;
     });
     return (
       <section className='movies'>
