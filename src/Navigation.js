@@ -1,17 +1,10 @@
 import React, { Component } from "react";
 import InputRange from "react-input-range";
+import SearchInput from "./SearchInput";
 import "react-input-range/lib/css/index.css";
+import "./Navigation.css";
 
 class Navigation extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedGenres: "",
-      genreList: [],
-      value: { min: 2, max: 10 }
-    };
-  }
-
   componentDidMount() {
     fetch(
       "https://api.themoviedb.org/3/genre/movie/list?api_key=20332a8bd8988839153d7b400ba8f9db&language=en-US"
@@ -31,52 +24,57 @@ class Navigation extends Component {
   };
 
   render() {
+    let {
+      searchMovie,
+      filterYear,
+      filterRating,
+      handleSearch,
+      handleSort,
+      handleClearAll,
+      handleFilterRating,
+      handleFilterYear,
+      movies
+    } = this.props;
+
     return (
-      <section className='navigation'>
-        <input type='text' placeholder='Search Movie' />
-        <p>Sort By Rating</p>
-        <a href='#' className='btn btn-light'>
-          Low to High
-        </a>
-        <a href='#' className='btn btn-light'>
-          High to Low
-        </a>
-        <h4>Genres</h4>
-        <Selection
-          selectedGenres={this.state.selectedGenres}
-          onGenreChange={this.onGenreChange}
-        />
+      <section className='navigation shadow p-4'>
+        <p>Number of movies: {movies.length}</p>
+        <SearchInput searchMovie={searchMovie} handleSearch={handleSearch} />
+        <div
+          className='btn-group btn-group-lg d-flex flex-row justify-content-around mb-2'
+          role='group'>
+          <button className='btn btn-light' onClick={handleSort("Low To High")}>
+            Low to High
+          </button>
+          <button className='btn btn-light' onClick={handleSort("High To Low")}>
+            High to Low
+          </button>
+          <button className='btn btn-light' onClick={handleSort('Clear All')}>
+            Clear Sort
+          </button>
+        </div>
+
+        <div className='mb-2 mt-3'>
+          <p className='pb-2'>Rating</p>
+          <InputRange
+            draggableTrack
+            formatLabel={value => value.toFixed(1)}
+            step={0.1}
+            value={filterRating}
+            onChange={handleFilterRating}
+          />
+        </div>
+
+        <p>Year</p>
         <InputRange
-          maxValue={20}
-          minValue={0}
-          value={this.state.value}
-          onChange={value => this.setState({ value })}
-        />
-        <InputRange
-          maxValue={20}
-          minValue={0}
-          value={this.state.value}
-          onChange={value => this.setState({ value })}
+          maxValue={2019}
+          minValue={1987}
+          value={filterYear}
+          onChange={handleFilterYear}
         />
       </section>
     );
   }
 }
-
-const Selection = ({ selectedGenres, onGenreChange }) => {
-  return (
-    <div>
-      <select
-        value={selectedGenres}
-        name='select'
-        id=''
-        onChange={onGenreChange}>
-        <option value='Comedy'>Comedy</option>
-        <option value='Action'>Action</option>
-        <option value='Drama'>Drama</option>
-      </select>
-    </div>
-  );
-};
 
 export default Navigation;

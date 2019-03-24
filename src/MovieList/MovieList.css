@@ -1,0 +1,3 @@
+.movies .container .card-columns { 
+    column-count: 2;
+}

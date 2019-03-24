@@ -9,7 +9,6 @@ class Selection extends Component {
   }
 
   
-
   render() {
     return (
       <div>

@@ -1,0 +1,10 @@
+.input-range__label--max, .input-range__label--min  { 
+    display: none;
+}
+
+.input-range { 
+    width: 80%;
+    margin: auto;
+    padding-top: 20px;
+}
+
