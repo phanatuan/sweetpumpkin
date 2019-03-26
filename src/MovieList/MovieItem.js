@@ -4,39 +4,9 @@ import ModalYoutubeTrailer from "../ModalYoutubeTrailer";
 import "./MovieItem.css";
 
 class MovieItem extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      isOpen: false,
-      trailers: []
-    };
-  }
-
-  showTrailer = id => () => {
-    this.setState({ isOpen: true });
-    this.fetchMovieTrailerId(id);
-  };
-
-  fetchMovieTrailerId = async id => {
-    const API_KEY = "20332a8bd8988839153d7b400ba8f9db";
-    const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}&language=en-US`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const trailers = await data.results;
-    this.setState({
-      trailers
-    });
-  };
-
-  closeModal = () => {
-    this.setState({
-      isOpen: false
-    });
-  };
-
   render() {
     const baseUrl = "https://image.tmdb.org/t/p/w500/";
-    const displayMovie = (movie, showTrailer) => {
+    const displayMovie = (movie) => {
       return (
         <div className='card mb-5 shadow border-light' key={movie.id}>
           <div className='card-header align-center p-0 m-0'>
@@ -54,9 +24,13 @@ class MovieItem extends React.Component {
             <div className='card-text'>{movie.overview}</div>
           </div>
           <div className='card-footer'>
-            <div className='row'>
-              <div className='col'>Year: {movie.release_date}</div>
-              <div className='col'>Rating: {movie.vote_average}</div>
+            <div className='d-flex flex-row justify-content-between'>
+              <div>
+                Year: <b>{movie.release_date}</b>
+              </div>
+              <div>
+                Rating:<b> {movie.vote_average}</b>
+              </div>
             </div>
             <Link to={`/movie/${movie.id}`}>
               <button className='btn btn-primary btn-block my-3'>
@@ -64,7 +38,7 @@ class MovieItem extends React.Component {
               </button>
             </Link>
             <button
-              onClick={showTrailer(movie.id)}
+              onClick={this.props.openModal(movie.id)}
               className='btn btn-primary btn-block my-3'>
               Show Trailer
             </button>
@@ -76,12 +50,7 @@ class MovieItem extends React.Component {
     if (this.props.movie) {
       return (
         <>
-          {displayMovie(this.props.movie, this.showTrailer)}
-          <ModalYoutubeTrailer
-            isOpen={this.state.isOpen}
-            closeModal={this.closeModal}
-            keys={this.state.trailers.map(trailer => trailer.key)}
-          />
+          {displayMovie(this.props.movie)}
         </>
       );
     } else {

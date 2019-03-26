@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import Header from "./Header";
 import MovieList from "./MovieList/MovieList";
 import Navigation from "./Navigation";
-import { Switch, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
+import MoviePage from './MoviePage';
+import BreadCrumb from './BreadCrumb';
+import "./App.css";
 
 class App extends Component {
   constructor() {
@@ -34,7 +37,6 @@ class App extends Component {
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         this.setState({
           movies: data.results
         });
@@ -141,6 +143,11 @@ class App extends Component {
       )
       .filter(
         movie =>
+          +movie.release_date.substring(0, 4) >= filterYear.min &&
+          +movie.release_date.substring(0, 4) <= filterYear.max
+      )
+      .filter(
+        movie =>
           movie.vote_average > this.state.filterRating.min &&
           movie.vote_average < this.state.filterRating.max
       )
@@ -150,17 +157,11 @@ class App extends Component {
           : b.vote_average - a.vote_average
       );
 
-    const MoviePage = ({ match }) => {
-      return (
-        <MoviePage
-          movie={displayMovies.filter(movie => movie.id === match.params.id)}
-        />
-      );
-    };
-
     return (
       <div className='container'>
         <Header />
+        <BreadCrumb />
+        <Route exact path='/' render={() => 
         <div className='row'>
           <div className='col-4'>
             <Navigation
@@ -185,13 +186,12 @@ class App extends Component {
               showTrailer={this.showTrailer}
             />
           </div>
-        </div>
-        <Switch>
-          <Route path='/movie/:movieId' component={MoviePage} />
-        </Switch>
+        </div>} />
+        <Route path='/movie/:id' component={({match}) => <MoviePage movie={movies.filter(movie => movie.id === +match.params.id)[0]} id={+match.params.id}/>}/>
       </div>
     );
   }
 }
 
 export default App;
+

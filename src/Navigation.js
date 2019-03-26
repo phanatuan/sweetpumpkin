@@ -37,7 +37,7 @@ class Navigation extends Component {
     } = this.props;
 
     return (
-      <section className='navigation shadow p-4'>
+      <section className='navigation shadow p-4 sticky'>
         <p>Number of movies: {movies.length}</p>
         <SearchInput searchMovie={searchMovie} handleSearch={handleSearch} />
         <div
